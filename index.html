@@ -90,28 +90,6 @@
       background-color: #999999;
     }
 
-    #controlMusica {
-      background-color: #cc66ff;
-      color: white;
-      font-size: 40px;
-      border-radius: 50%;
-      width: 80px;
-      height: 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 3;
-      position: absolute;
-      bottom: 20px;
-      right: 20px;
-      padding: 0;
-    }
-
-    #controlMusica:hover {
-      background-color: #aa44dd;
-      transform: scale(1.1);
-    }
-
     #btnVerSorpresa {
       background-color: #ff3399;
       color: white;
@@ -256,11 +234,6 @@
         font-size: 20px;
         padding: 12px 24px;
       }
-      #controlMusica {
-        width: 60px;
-        height: 60px;
-        font-size: 30px;
-      }
       .mensaje {
         font-size: 32px;
       }
@@ -300,8 +273,6 @@
         <button id="no">No</button>
       </div>
     </div>
-    
-    <button id="controlMusica" aria-label="Control de música">🎵</button>
   </div>
 
   <div class="mensaje-final" id="mensajeFinal">
@@ -324,7 +295,6 @@
     const noBtn = document.getElementById("no");
     const siBtn = document.getElementById("si");
     const musica = document.getElementById("musica");
-    const controlBtn = document.getElementById("controlMusica");
     const pantallaSorpresa = document.getElementById("pantallaSorpresa");
     const pantallaValentin = document.getElementById("pantallaValentin");
     const btnVerSorpresa = document.getElementById("btnVerSorpresa");
@@ -335,8 +305,7 @@
     // Intentar reproducir música al cargar (manejar autoplay)
     window.addEventListener('load', () => {
       musica.play().catch(() => {
-        // Si autoplay falla, cambiar icono para que usuario active música
-        controlBtn.textContent = "🎵";
+        console.log('Autoplay bloqueado - la música se reproducirá al dar clic en Ver sorpresa');
       });
     });
 
@@ -346,7 +315,6 @@
       musica.play().catch(() => {
         console.log('No se pudo reproducir la música automáticamente');
       });
-      controlBtn.textContent = "🎵";
       
       pantallaSorpresa.style.opacity = '0';
       setTimeout(() => {
