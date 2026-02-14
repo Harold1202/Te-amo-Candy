@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Candy - ¿Quieres ser mi San Valentín?</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: linear-gradient(270deg, #ff99cc, #ff66b2, #cc66ff, #ff3366);
+      background-size: 800% 800%;
+      animation: gradiente 15s ease infinite;
+    }
+
+    @keyframes gradiente {
+      0% {background-position:0% 50%;}
+      50% {background-position:100% 50%;}
+      100% {background-position:0% 50%;}
+    }
+
+    .contenido {
+      text-align: center;
+      background-color: rgba(255, 255, 255, 0.85);
+      padding: 40px;
+      border-radius: 30px;
+      z-index: 2;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    h1 {
+      color: #ff3399;
+      font-size: 48px;
+      margin-bottom: 40px;
+      line-height: 1.4;
+      text-shadow: 2px 2px 4px rgba(255,51,153,0.3);
+      transition: opacity 1s ease;
+    }
+
+    h2 {
+      color: #ff3399;
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    .botones {
+      margin-top: 20px;
+      position: relative;
+      min-height: 80px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 28px;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px;
+      font-family: inherit;
+    }
+
+    #si {
+      background-color: #ff66b2;
+      color: white;
+      position: relative;
+      z-index: 3;
+    }
+
+    #si:hover {
+      background-color: #ff3399;
+      transform: scale(1.1);
+    }
+
+    #no {
+      background-color: #cccccc;
+      color: black;
+      position: fixed;
+      z-index: 2;
+      transition: all 0.1s ease;
+    }
+
+    #no:hover {
+      background-color: #999999;
+    }
+
+    #btnVerSorpresa {
+      background-color: #ff3399;
+      color: white;
+      font-size: 28px;
+      padding: 15px 40px;
+    }
+
+    #btnVerSorpresa:hover {
+      background-color: #ff66b2;
+      transform: scale(1.1);
+    }
+
+    .corazon {
+      position: fixed;
+      font-size: 40px;
+      animation: flotar 3s linear forwards;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    @keyframes flotar {
+      0% { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--x), var(--y)) scale(var(--scale)); opacity: 0; }
+    }
+
+    .confeti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: var(--color);
+      animation: caerConfeti 3s linear forwards;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    @keyframes caerConfeti {
+      0% { 
+        transform: translateY(0) rotateZ(0deg);
+        opacity: 1;
+      }
+      100% { 
+        transform: translateY(100vh) rotateZ(720deg);
+        opacity: 0;
+      }
+    }
+
+    .estrella {
+      position: fixed;
+      font-size: 30px;
+      animation: flotar 4s linear forwards;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    .fecha-especial {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 18px;
+      color: #ff3399;
+      opacity: 0.8;
+      z-index: 10;
+    }
+
+    .mensaje {
+      position: fixed;
+      bottom: 20%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 50px;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 3px 3px 10px #ff0066, -1px -1px 5px #ff66b2;
+      animation: aparecer 3s ease forwards;
+      z-index: 999;
+      white-space: nowrap;
+    }
+
+    @keyframes aparecer {
+      0% { opacity: 0; transform: translateX(-50%) scale(0.5); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.2); }
+      100% { opacity: 0; transform: translateX(-50%) scale(1); }
+    }
+
+    .mensaje-final {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 30px;
+      text-align: center;
+      z-index: 2000;
+      box-shadow: 0 10px 50px rgba(255, 51, 153, 0.5);
+      opacity: 0;
+      transition: opacity 1s ease;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    .mensaje-final h2 {
+      color: #ff3399;
+      font-size: 36px;
+      margin-bottom: 20px;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    .mensaje-final p {
+      color: #ff3399;
+      font-size: 24px;
+      line-height: 1.6;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    /* Quiz styles */
+    .quiz-container {
+      display: none;
+    }
+
+    .pregunta {
+      margin-bottom: 30px;
+    }
+
+    .pregunta p {
+      font-size: 24px;
+      color: #ff3399;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .opciones {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .opcion {
+      background-color: #ffccee;
+      color: #ff3399;
+      padding: 15px 30px;
+      font-size: 22px;
+      border: 3px solid #ff66b2;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 80%;
+      max-width: 400px;
+    }
+
+    .opcion:hover {
+      background-color: #ff99cc;
+      transform: scale(1.05);
+    }
+
+    .opcion.correcta {
+      background-color: #66ff99;
+      border-color: #00cc66;
+      animation: pulso 0.5s;
+    }
+
+    .opcion.incorrecta {
+      background-color: #ff6666;
+      border-color: #cc0000;
+      animation: shake 0.5s;
+    }
+
+    @keyframes pulso {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-10px); }
+      75% { transform: translateX(10px); }
+    }
+
+    .progreso {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #ff3399;
+    }
+
+    /* Juego de corazones */
+    .juego-corazones {
+      display: none;
+      position: relative;
+      min-height: 400px;
+    }
+
+    .corazon-clickeable {
+      position: absolute;
+      font-size: 50px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      animation: latido 1.5s infinite;
+      z-index: 10;
+    }
+
+    .corazon-clickeable:hover {
+      transform: scale(1.3);
+    }
+
+    @keyframes latido {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .contador-corazones {
+      font-size: 28px;
+      color: #ff3399;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    /* Mensaje de transición */
+    .mensaje-transicion {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.95);
+      padding: 50px;
+      border-radius: 30px;
+      text-align: center;
+      z-index: 3000;
+      box-shadow: 0 10px 50px rgba(255, 51, 153, 0.5);
+      animation: apareceTransicion 0.5s ease;
+    }
+
+    @keyframes apareceTransicion {
+      0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    .mensaje-transicion h2 {
+      color: #ff3399;
+      font-size: 42px;
+      margin-bottom: 20px;
+    }
+
+    .mensaje-transicion p {
+      color: #ff3399;
+      font-size: 24px;
+    }
+
+    /* Botón de reinicio */
+    .btn-reiniciar {
+      background: linear-gradient(45deg, #ff3399, #ff66b2);
+      color: white;
+      padding: 15px 35px;
+      font-size: 22px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      margin-top: 25px;
+      transition: transform 0.3s;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+
+    .btn-reiniciar:hover {
+      transform: scale(1.08);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 32px;
+      }
+      h2 {
+        font-size: 24px;
+      }
+      button {
+        font-size: 20px;
+        padding: 12px 24px;
+      }
+      .mensaje {
+        font-size: 32px;
+      }
+      .mensaje-final {
+        padding: 30px 20px;
+        max-width: 95%;
+      }
+      .mensaje-final h2 {
+        font-size: 28px;
+      }
+      .mensaje-final p {
+        font-size: 18px;
+        line-height: 1.5;
+      }
+      .fecha-especial {
+        font-size: 14px;
+      }
+      .pregunta p {
+        font-size: 20px;
+      }
+      .opcion {
+        font-size: 18px;
+        padding: 12px 20px;
+      }
+      .corazon-clickeable {
+        font-size: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="contenido">
+    <div class="fecha-especial">💕 14 de Febrero 2026 💕</div>
+    
+    <!-- Pantalla 1: Sorpresa inicial -->
+    <div id="pantallaSorpresa" style="transition: opacity 0.5s ease;">
+      <h1>Candy 💖</h1>
+      <p style="font-size: 28px; color: #ff3399; margin: 30px 0; line-height: 1.6;">
+        Amor, te tengo una sorpresa,<br>si quieres verla dale clic al botón 💝
+      </p>
+      <button id="btnVerSorpresa">Ver sorpresa ✨</button>
+    </div>
+    
+    <!-- Pantalla 2: Quiz -->
+    <div id="pantallaQuiz" class="quiz-container" style="opacity: 0; transition: opacity 0.5s ease;">
+      <h2>Antes de continuar... 💕</h2>
+      <p style="font-size: 20px; color: #ff3399; margin-bottom: 30px;">
+        Responde estas preguntas sobre nosotros:
+      </p>
+      
+      <div class="pregunta" id="pregunta1">
+        <p>¿Dónde nos dimos nuestro primer beso? 💋</p>
+        <div class="opciones">
+          <button class="opcion" data-pregunta="1" data-respuesta="Playa">Playa</button>
+          <button class="opcion" data-pregunta="1" data-respuesta="Cine">Cine</button>
+          <button class="opcion" data-pregunta="1" data-respuesta="Parque">Parque</button>
+        </div>
+      </div>
+
+      <div class="pregunta" id="pregunta2" style="display: none;">
+        <p>¿A qué sabía mi boca la primera vez que me besaste? 😘</p>
+        <div class="opciones">
+          <button class="opcion" data-pregunta="2" data-respuesta="Menta">Menta</button>
+          <button class="opcion" data-pregunta="2" data-respuesta="Comida">Comida</button>
+          <button class="opcion" data-pregunta="2" data-respuesta="Piqueos">Piqueos</button>
+        </div>
+      </div>
+
+      <div class="pregunta" id="pregunta3" style="display: none;">
+        <p>¿De qué color es la prenda tuya que tengo en mi casa? 👕</p>
+        <div class="opciones">
+          <button class="opcion" data-pregunta="3" data-respuesta="Rojo">Rojo</button>
+          <button class="opcion" data-pregunta="3" data-respuesta="Negro">Negro</button>
+          <button class="opcion" data-pregunta="3" data-respuesta="Rosa">Rosa</button>
+        </div>
+      </div>
+
+      <div class="progreso">Pregunta <span id="numPregunta">1</span> de 3</div>
+    </div>
+
+    <!-- Pantalla 3: Juego de corazones -->
+    <div id="pantallaJuego" class="juego-corazones" style="opacity: 0; transition: opacity 0.5s ease;">
+      <h2>¡Muy bien! 💖</h2>
+      <p style="font-size: 22px; color: #ff3399; margin-bottom: 30px;">
+        Ahora encuentra los 5 corazones escondidos ❤️
+      </p>
+      <div class="contador-corazones">
+        Corazones encontrados: <span id="corazonesEncontrados">0</span> / 5
+      </div>
+      <div id="areaJuego" style="position: relative; min-height: 350px; background: rgba(255, 153, 204, 0.1); border-radius: 20px; padding: 20px;">
+        <!-- Los corazones se generarán aquí con JavaScript -->
+      </div>
+    </div>
+    
+    <!-- Pantalla 4: Pregunta San Valentín -->
+    <div id="pantallaValentin" style="display: none; opacity: 0; transition: opacity 0.5s ease;">
+      <h1>Candy 💖<br>¿Quieres ser mi San Valentín?</h1>
+      <div class="botones">
+        <button id="si">¡Sí!</button>
+        <button id="no">No</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mensaje final -->
+  <div class="mensaje-final" id="mensajeFinal">
+    <h2>¡Eres mi todo! 💖</h2>
+    <p>
+      Cada momento contigo es especial.<br>
+      Desde ese 16 de septiembre mi amor no ha hecho nada más que crecer por ti.<br>
+      Te amo más de lo que las palabras pueden expresar.<br>
+      Gracias por ser mi San Valentín. 💕
+    </p>
+    <p style="margin-top: 20px; font-size: 22px; font-style: italic;">
+      Atte: Harold ❤️
+    </p>
+    <button class="btn-reiniciar" id="btnReiniciar">Volver a empezar 🔄</button>
+  </div>
+
+  <!-- Mensaje de transición -->
+  <div class="mensaje-transicion" id="mensajeTransicion">
+    <h2>¡Perfecto! 🎉</h2>
+    <p>Ahora viene el juego 💕</p>
+  </div>
+
+  <!-- Música local -->
+  <audio id="musica" src="perfect.mp3" loop></audio>
+  
+  <!-- Efectos de sonido -->
+  <audio id="sonidoCorrecto" src="correcto.mp3"></audio>
+  <audio id="sonidoIncorrecto" src="incorrecto.mp3"></audio>
+  <audio id="sonidoCorazon" src="corazon.mp3"></audio>
+
+  <script>
+    const pantallaSorpresa = document.getElementById("pantallaSorpresa");
+    const pantallaQuiz = document.getElementById("pantallaQuiz");
+    const pantallaJuego = document.getElementById("pantallaJuego");
+    const pantallaValentin = document.getElementById("pantallaValentin");
+    const btnVerSorpresa = document.getElementById("btnVerSorpresa");
+    const musica = document.getElementById("musica");
+    const mensajeFinal = document.getElementById("mensajeFinal");
+    const mensajeTransicion = document.getElementById("mensajeTransicion");
+    const noBtn = document.getElementById("no");
+    const siBtn = document.getElementById("si");
+    const btnReiniciar = document.getElementById("btnReiniciar");
+    
+    // Sonidos
+    const sonidoCorrecto = document.getElementById("sonidoCorrecto");
+    const sonidoIncorrecto = document.getElementById("sonidoIncorrecto");
+    const sonidoCorazon = document.getElementById("sonidoCorazon");
+    
+    let preguntaActual = 1;
+    let corazonesEncontrados = 0;
+    let escapeCount = 0;
+
+    const respuestasCorrectas = {
+      1: "Playa",
+      2: "Piqueos",
+      3: "Negro"
+    };
+
+    // Intentar reproducir música al cargar
+    window.addEventListener('load', () => {
+      musica.play().catch(() => {
+        console.log('Autoplay bloqueado');
+      });
+    });
+
+    // Botón Ver sorpresa
+    btnVerSorpresa.addEventListener("click", () => {
+      musica.play().catch(() => {});
+      
+      pantallaSorpresa.style.opacity = '0';
+      setTimeout(() => {
+        pantallaSorpresa.style.display = 'none';
+        pantallaQuiz.style.display = 'block';
+        setTimeout(() => {
+          pantallaQuiz.style.opacity = '1';
+        }, 50);
+      }, 500);
+    });
+
+    // Quiz - Manejar respuestas
+    document.querySelectorAll('.opcion').forEach(opcion => {
+      opcion.addEventListener('click', function() {
+        const pregunta = this.dataset.pregunta;
+        const respuesta = this.dataset.respuesta;
+        const esCorrecta = respuesta === respuestasCorrectas[pregunta];
+        
+        // Deshabilitar todas las opciones de esta pregunta
+        const todasOpciones = document.querySelectorAll(`[data-pregunta="${pregunta}"]`);
+        todasOpciones.forEach(op => op.style.pointerEvents = 'none');
+        
+        if (esCorrecta) {
+          this.classList.add('correcta');
+          // Reproducir sonido de éxito
+          sonidoCorrecto.currentTime = 0;
+          sonidoCorrecto.play().catch(() => {});
+          
+          crearCorazonesAleatorios(3);
+          
+          setTimeout(() => {
+            if (preguntaActual < 3) {
+              // Siguiente pregunta
+              document.getElementById(`pregunta${preguntaActual}`).style.display = 'none';
+              preguntaActual++;
+              document.getElementById(`pregunta${preguntaActual}`).style.display = 'block';
+              document.getElementById('numPregunta').textContent = preguntaActual;
+            } else {
+              // Quiz completado, mostrar mensaje de transición
+              pantallaQuiz.style.opacity = '0';
+              setTimeout(() => {
+                pantallaQuiz.style.display = 'none';
+                mostrarMensajeTransicion();
+              }, 500);
+            }
+          }, 1500);
+        } else {
+          this.classList.add('incorrecta');
+          // Reproducir sonido de error
+          sonidoIncorrecto.currentTime = 0;
+          sonidoIncorrecto.play().catch(() => {});
+          
+          setTimeout(() => {
+            this.classList.remove('incorrecta');
+            todasOpciones.forEach(op => op.style.pointerEvents = 'auto');
+          }, 500);
+        }
+      });
+    });
+
+    // Juego de corazones
+    function mostrarMensajeTransicion() {
+      mensajeTransicion.style.display = 'block';
+      setTimeout(() => {
+        mensajeTransicion.style.display = 'none';
+        iniciarJuegoCorazones();
+      }, 2000);
+    }
+
+    function iniciarJuegoCorazones() {
+      pantallaJuego.style.display = 'block';
+      setTimeout(() => {
+        pantallaJuego.style.opacity = '1';
+        generarCorazonesClickeables();
+      }, 50);
+    }
+
+    function generarCorazonesClickeables() {
+      const area = document.getElementById('areaJuego');
+      const corazones = ['❤️', '💖', '💕', '💗', '💝'];
+      
+      for (let i = 0; i < 5; i++) {
+        const corazon = document.createElement('div');
+        corazon.classList.add('corazon-clickeable');
+        corazon.textContent = corazones[i];
+        corazon.style.left = (Math.random() * 70 + 10) + '%';
+        corazon.style.top = (Math.random() * 70 + 10) + '%';
+        
+        corazon.addEventListener('click', function() {
+          this.style.display = 'none';
+          corazonesEncontrados++;
+          document.getElementById('corazonesEncontrados').textContent = corazonesEncontrados;
+          
+          // Reproducir sonido de corazón
+          sonidoCorazon.currentTime = 0;
+          sonidoCorazon.play().catch(() => {});
+          
+          crearCorazonesAleatorios(5);
+          
+          if (corazonesEncontrados === 5) {
+            setTimeout(() => {
+              pantallaJuego.style.opacity = '0';
+              setTimeout(() => {
+                pantallaJuego.style.display = 'none';
+                pantallaValentin.style.display = 'block';
+                setTimeout(() => {
+                  pantallaValentin.style.opacity = '1';
+                  posicionarBotonNo();
+                }, 50);
+              }, 500);
+            }, 1000);
+          }
+        });
+        
+        area.appendChild(corazon);
+      }
+    }
+
+    // Posicionar botón "No"
+    function posicionarBotonNo() {
+      const contenidoRect = document.querySelector('.contenido').getBoundingClientRect();
+      noBtn.style.left = (contenidoRect.left + contenidoRect.width/2 + 100) + "px";
+      noBtn.style.top = (contenidoRect.top + contenidoRect.height/2 + 50) + "px";
+    }
+    
+    window.addEventListener('resize', () => {
+      if (pantallaValentin.style.display === 'block') {
+        posicionarBotonNo();
+      }
+    });
+
+    // Botón "No" escapa
+    noBtn.addEventListener("mouseenter", escapar);
+    noBtn.addEventListener("touchstart", escapar);
+
+    function escapar() {
+      escapeCount++;
+      const margen = 100;
+      const maxX = window.innerWidth - noBtn.offsetWidth - margen;
+      const maxY = window.innerHeight - noBtn.offsetHeight - margen;
+      
+      const x = Math.max(margen, Math.floor(Math.random() * maxX));
+      const y = Math.max(margen, Math.floor(Math.random() * maxY));
+      
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+      
+      const nuevoTamano = Math.max(14, 28 - escapeCount * 2);
+      noBtn.style.fontSize = nuevoTamano + "px";
+      noBtn.style.padding = Math.max(8, 15 - escapeCount) + "px " + Math.max(15, 30 - escapeCount * 2) + "px";
+    }
+
+    // Botón "Sí"
+    siBtn.addEventListener("click", celebrar);
+    
+    function celebrar() {
+      musica.volume = 0.3;
+      setTimeout(() => {
+        musica.volume = 1;
+      }, 12000);
+      
+      document.body.style.background = 'linear-gradient(270deg, #ff66b2, #ff99cc, #ffccee, #ff3399)';
+      
+      siBtn.style.opacity = '0';
+      noBtn.style.opacity = '0';
+      setTimeout(() => {
+        siBtn.style.display = 'none';
+        noBtn.style.display = 'none';
+      }, 300);
+      
+      const titulo = document.querySelector('#pantallaValentin h1');
+      titulo.style.opacity = '0';
+      
+      setTimeout(() => {
+        titulo.innerHTML = "Candy 💖<br>Te amo mi vida";
+        titulo.style.opacity = '1';
+      }, 1000);
+      
+      const frases = ["Te amo, Candy 💕", "Eres mi todo ❤️", "Siempre contigo 💜"];
+      frases.forEach((texto, i) => {
+        setTimeout(() => {
+          mostrarMensaje(texto);
+        }, i * 3500);
+      });
+
+      const rect = siBtn.getBoundingClientRect();
+      const x = rect.left + rect.width / 2;
+      const y = rect.top + rect.height / 2;
+      crearCorazones(x, y, 15);
+      
+      crearConfeti();
+      setTimeout(() => crearConfeti(), 1500);
+      
+      setTimeout(() => crearEstrellas(), 500);
+      setTimeout(() => crearEstrellas(), 2000);
+      
+      setTimeout(() => {
+        mensajeFinal.style.display = 'block';
+        setTimeout(() => {
+          mensajeFinal.style.opacity = '1';
+        }, 100);
+      }, 12000);
+    }
+
+    function mostrarMensaje(texto) {
+      const mensaje = document.createElement("div");
+      mensaje.classList.add("mensaje");
+      mensaje.textContent = texto;
+      document.body.appendChild(mensaje);
+      setTimeout(() => mensaje.remove(), 3000);
+    }
+
+    function crearCorazones(x, y, cantidad) {
+      const emojis = ["❤️", "💖", "💜", "💕", "💗"];
+      for (let i = 0; i < cantidad; i++) {
+        setTimeout(() => {
+          const corazon = document.createElement("div");
+          corazon.classList.add("corazon");
+          corazon.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+          corazon.style.left = (x + (Math.random() * 100 - 50)) + "px";
+          corazon.style.top = y + "px";
+
+          const desplazamientoX = (Math.random() * 300 - 150) + "px";
+          const desplazamientoY = (-250 - Math.random() * 150) + "px";
+          const escala = (Math.random() * 1.5 + 0.5).toFixed(2);
+
+          corazon.style.setProperty("--x", desplazamientoX);
+          corazon.style.setProperty("--y", desplazamientoY);
+          corazon.style.setProperty("--scale", escala);
+
+          document.body.appendChild(corazon);
+
+          setTimeout(() => corazon.remove(), 3000);
+        }, i * 100);
+      }
+    }
+
+    function crearCorazonesAleatorios(cantidad) {
+      for (let i = 0; i < cantidad; i++) {
+        const x = Math.random() * window.innerWidth;
+        const y = Math.random() * window.innerHeight;
+        crearCorazones(x, y, 1);
+      }
+    }
+
+    function crearConfeti() {
+      const colores = ['#ff3399', '#ff66b2', '#cc66ff', '#ff99cc', '#ffcc00', '#00ffcc'];
+      for (let i = 0; i < 50; i++) {
+        setTimeout(() => {
+          const confeti = document.createElement("div");
+          confeti.classList.add("confeti");
+          confeti.style.setProperty("--color", colores[Math.floor(Math.random() * colores.length)]);
+          confeti.style.left = Math.random() * window.innerWidth + "px";
+          confeti.style.top = -10 + "px";
+          document.body.appendChild(confeti);
+          setTimeout(() => confeti.remove(), 3000);
+        }, i * 30);
+      }
+    }
+
+    function crearEstrellas() {
+      const emojis = ["✨", "⭐", "🌟", "💫"];
+      for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+          const estrella = document.createElement("div");
+          estrella.classList.add("estrella");
+          estrella.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+          estrella.style.left = Math.random() * window.innerWidth + "px";
+          estrella.style.top = Math.random() * window.innerHeight + "px";
+
+          const desplazamientoX = (Math.random() * 200 - 100) + "px";
+          const desplazamientoY = (-200 - Math.random() * 100) + "px";
+          const escala = (Math.random() * 1.5 + 0.5).toFixed(2);
+
+          estrella.style.setProperty("--x", desplazamientoX);
+          estrella.style.setProperty("--y", desplazamientoY);
+          estrella.style.setProperty("--scale", escala);
+
+          document.body.appendChild(estrella);
+
+          setTimeout(() => estrella.remove(), 4000);
+        }, i * 100);
+      }
+    }
+
+    // Corazones flotando constantemente
+    setInterval(() => {
+      const emojis = ["❤️", "💖", "💜", "💕"];
+      const corazon = document.createElement("div");
+      corazon.classList.add("corazon");
+      corazon.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+
+      corazon.style.left = Math.random() * window.innerWidth + "px";
+      corazon.style.top = window.innerHeight + "px";
+
+      const desplazamientoX = (Math.random() * 200 - 100) + "px";
+      const desplazamientoY = (-350 - Math.random() * 250) + "px";
+      const escala = (Math.random() * 1.5 + 0.5).toFixed(2);
+
+      corazon.style.setProperty("--x", desplazamientoX);
+      corazon.style.setProperty("--y", desplazamientoY);
+      corazon.style.setProperty("--scale", escala);
+
+      document.body.appendChild(corazon);
+
+      setTimeout(() => corazon.remove(), 4000);
+    }, 1200);
+
+    // Botón de reinicio
+    btnReiniciar.addEventListener('click', () => {
+      location.reload();
+    });
+  </script>
+</body>
+</html>
